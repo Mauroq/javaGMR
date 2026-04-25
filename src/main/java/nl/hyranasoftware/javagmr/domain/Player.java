@@ -22,7 +22,7 @@ public class Player {
     @JsonProperty("AvatarUrl")
     public String avatarUrl;
     @JsonProperty("PersonaState")
-    public int PersonaState;
+    public String PersonaState;
     @JsonProperty("GameID")
     public int gameId;
     @JsonProperty("TurnOrder")
@@ -31,7 +31,7 @@ public class Player {
     public Player() {
     }
 
-    public Player(String steamId, String PersonaName, String avatarUrl, int PersonaState, int GameID) {
+    public Player(String steamId, String PersonaName, String avatarUrl, String PersonaState, int GameID) {
 
         this.steamId = steamId;
         this.personaName = PersonaName;
@@ -50,7 +50,7 @@ public class Player {
         return avatarUrl;
     }
     @JsonProperty("PersonaState")
-    public int getPersonaState() {
+    public String getPersonaState() {
         return PersonaState;
     }
 

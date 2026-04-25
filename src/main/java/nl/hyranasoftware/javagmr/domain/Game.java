@@ -33,7 +33,7 @@ public class Game implements Comparable<Game> {
     private String name;
     private List<Player> players;
     private CurrentTurn currentTurn;
-    private int type;
+    private String type;
     private boolean processed;
     private boolean processedAllGames;
 
@@ -58,7 +58,7 @@ public class Game implements Comparable<Game> {
     }
 
     @JsonProperty("Type")
-    public int getType() {
+    public String getType() {
         return type;
     }
 
