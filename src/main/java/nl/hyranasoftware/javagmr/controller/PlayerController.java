@@ -22,6 +22,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import nl.hyranasoftware.javagmr.domain.Game;
 import nl.hyranasoftware.javagmr.util.JGMRConfig;
+import nl.hyranasoftware.javagmr.util.JsonHelper;
 
 /**
  *
@@ -32,9 +33,12 @@ public class PlayerController {
     public Player getPlayerFromGMR(String playerid) {
         try {
             String requestUrl = "http://multiplayerrobot.com/api/Diplomacy/GetGamesAndPlayers";
-            String response = Unirest.get(requestUrl).queryString("playerIDText", playerid).queryString("authKey", "").asJson().getBody().toString();
+            //String response = Unirest.get(requestUrl).queryString("playerIDText", playerid).queryString("authKey", "").asJson().getBody().toString();
+            String response = Unirest.get(requestUrl).queryString("playerIDText", playerid).queryString("authKey", "").asString().getBody();
+            String responseJson = JsonHelper.TryParseJson(response);
+
             ObjectMapper mapper = new ObjectMapper();
-            String playerNode = mapper.readTree(response).get("Players").get(0).toString();
+            String playerNode = mapper.readTree(responseJson).get("Players").get(0).toString();
 
             Player player = mapper.readValue(playerNode, Player.class);
 
@@ -42,6 +46,8 @@ public class PlayerController {
         } catch (UnirestException ex) {
             Logger.getLogger(PlayerController.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IOException ex) {
+            Logger.getLogger(PlayerController.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (Exception ex) {
             Logger.getLogger(PlayerController.class.getName()).log(Level.SEVERE, null, ex);
         }
         return null;
@@ -85,9 +91,12 @@ public class PlayerController {
         }
         try {
             String requestUrl = "http://multiplayerrobot.com/api/Diplomacy/GetGamesAndPlayers";
-            String response = Unirest.get(requestUrl).queryString("playerIDText", playerIds).queryString("authKey", "").asJson().getBody().toString();
+            //String response = Unirest.get(requestUrl).queryString("playerIDText", playerIds).queryString("authKey", "").asJson().getBody().toString();
+            String response = Unirest.get(requestUrl).queryString("playerIDText", playerIds).queryString("authKey", "").asString().getBody();
+            String responseJson = JsonHelper.TryParseJson(response);
+
             ObjectMapper mapper = new ObjectMapper();
-            String playerNode = mapper.readTree(response).get("Players").toString();
+            String playerNode = mapper.readTree(responseJson).get("Players").toString();
 
             retrievedPlayers = mapper.readValue(playerNode, new TypeReference<List<Player>>() {
             });
@@ -108,6 +117,7 @@ public class PlayerController {
         String response = null;
         try {
             response = Unirest.get(requestUrl).queryString("authKey", authCode).asString().getBody();
+            response = JsonHelper.TryParseJson(response);
         } catch (UnirestException ex) {
             Logger.getLogger(PlayerController.class.getName()).log(Level.SEVERE, null, ex);
         }

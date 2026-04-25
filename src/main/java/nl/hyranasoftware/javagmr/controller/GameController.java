@@ -37,6 +37,7 @@ import nl.hyranasoftware.javagmr.domain.Game;
 import nl.hyranasoftware.javagmr.util.FilenameEditor;
 import nl.hyranasoftware.javagmr.util.GMRLogger;
 import nl.hyranasoftware.javagmr.util.JGMRConfig;
+import nl.hyranasoftware.javagmr.util.JsonHelper;
 import org.apache.http.entity.ContentType;
 
 /**
@@ -52,12 +53,14 @@ public class GameController {
     public List<Game> getGames() {
         try {
             String requestUrl = "http://multiplayerrobot.com/api/Diplomacy/GetGamesForPlayer";
-            String response = Unirest.get(requestUrl).queryString("playerIDText", "").queryString("authKey", JGMRConfig.getInstance().getAuthCode()).asJson().getBody().toString();
+            //String response = Unirest.get(requestUrl).queryString("playerIDText", "").queryString("authKey", JGMRConfig.getInstance().getAuthCode()).asJson().getBody().toString();
+            String response = Unirest.get(requestUrl).queryString("playerIDText", "").queryString("authKey", JGMRConfig.getInstance().getAuthCode()).asString().getBody();
+            String responseJson = JsonHelper.TryParseJson(response);
 
             ObjectMapper mapper = new ObjectMapper();
             mapper.registerModule(new JodaModule());
             //String gamesNode = mapper.readTree(response).get("Games").toString();
-            List<Game> games = mapper.readValue(response, new TypeReference<List<Game>>() {
+            List<Game> games = mapper.readValue(responseJson, new TypeReference<List<Game>>() {
             });
             class PlayersTask implements Runnable {
 
@@ -77,6 +80,7 @@ public class GameController {
         } catch (IOException ex) {
             Logger.getLogger(GameController.class.getName()).log(Level.SEVERE, null, ex);
         } catch (UnirestException ex) {
+            Logger.getLogger(GameController.class.getName()).log(Level.SEVERE, null, ex);
             return new ArrayList<Game>();
         }
         return null;
